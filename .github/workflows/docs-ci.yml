@@ -22,6 +22,6 @@ jobs:
       run: v doctor
     - name: Validate docs
       run: |
-        v install onecontext
+        v install ulises-jeremias.onecontext
         cd onecontext
         v check-md -all
