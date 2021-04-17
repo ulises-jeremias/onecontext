@@ -7,13 +7,6 @@
 [Contributing](https://github.com/ulises-jeremias/onecontext/blob/main/CONTRIBUTING.md)
 
 </div>
-<div align="center">
-
-[![Build Status][workflowbadge]][workflowurl]
-[![Docs Validation][validatedocsbadge]][validatedocsurl]
-[![License: MIT][licensebadge]][licenseurl]
-
-</div>
 
 A library to merge existing V contexts
 
