@@ -20,7 +20,7 @@ This context expires once the application is stopped.
 
 Meanwhile, we are exposing a service like this:
 
-```v nofmt
+```v ignore
 fn (f Foo) get(ctx context.Context, bar Bar) ?Baz {
 	. . .
 }
@@ -39,7 +39,7 @@ This is exactly the purpose of this library.
 
 In our case, we can now merge the two contexts in a single one like this:
 
-```v nofmt
+```v ignore
 ctx := onecontext.merge(ctx1, ctx2)
 ```
 
