@@ -1,5 +1,6 @@
+module onecontext
+
 import context
-import onecontext.onecontext
 import time
 
 fn eventually(ch chan int) bool {
@@ -31,7 +32,7 @@ fn test_merge_nomilan() {
 	bar := 'bar'
 	ctx2 := context.with_cancel(context.with_value(context.background(), 'bar', &bar))
 
-	ctx := onecontext.merge(ctx1, ctx2)
+	ctx := merge(ctx1, ctx2)
 
 	if deadline := ctx.deadline() {
 		panic('this should never happen')
@@ -50,7 +51,7 @@ fn test_merge_nomilan() {
 	assert !eventually(ctx.done())
 	assert ctx.err() is none
 
-	onecontext.cancel(ctx)
+	cancel(ctx)
 	assert eventually(ctx.done())
 	assert ctx.err() is Error
 }
@@ -61,7 +62,7 @@ fn test_merge_deadline_context_1() {
 		context.cancel(ctx1)
 	}
 	ctx2 := context.background()
-	ctx := onecontext.merge(ctx1, ctx2)
+	ctx := merge(ctx1, ctx2)
 
 	if deadline := ctx.deadline() {
 		assert deadline.unix_time() != 0
@@ -76,7 +77,7 @@ fn test_merge_deadline_context_2() {
 	defer {
 		context.cancel(ctx2)
 	}
-	ctx := onecontext.merge(ctx1, ctx2)
+	ctx := merge(ctx1, ctx2)
 
 	if deadline := ctx.deadline() {
 		assert deadline.unix_time() != 0
@@ -99,11 +100,11 @@ fn test_merge_deadline_context_n() {
 		ctxs << context.background()
 	}
 
-	ctx := onecontext.merge(ctx1, ...ctxs)
+	ctx := merge(ctx1, ...ctxs)
 
 	assert !eventually(ctx.done())
 	assert ctx.err() is none
-	onecontext.cancel(ctx)
+	cancel(ctx)
 	assert eventually(ctx.done())
 	assert ctx.err() is Error
 }
@@ -112,7 +113,7 @@ fn test_merge_deadline_none() {
 	ctx1 := context.background()
 	ctx2 := context.background()
 
-	ctx := onecontext.merge(ctx1, ctx2)
+	ctx := merge(ctx1, ctx2)
 
 	if _ := ctx.deadline() {
 		panic('this should never happen')
@@ -123,8 +124,8 @@ fn test_merge_cancel_two() {
 	ctx1 := context.background()
 	ctx2 := context.background()
 
-	ctx := onecontext.merge(ctx1, ctx2)
-	onecontext.cancel(ctx)
+	ctx := merge(ctx1, ctx2)
+	cancel(ctx)
 
 	assert eventually(ctx.done())
 	assert ctx.err() is Error
@@ -136,8 +137,8 @@ fn test_merge_cancel_multiple() {
 	ctx2 := context.background()
 	ctx3 := context.background()
 
-	ctx := onecontext.merge(ctx1, ctx2, ctx3)
-	onecontext.cancel(ctx)
+	ctx := merge(ctx1, ctx2, ctx3)
+	cancel(ctx)
 
 	assert eventually(ctx.done())
 	assert ctx.err() is Error

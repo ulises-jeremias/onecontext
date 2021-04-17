@@ -21,7 +21,7 @@ mut:
 pub fn cancel(ctx context.Context) {
 	match mut ctx {
 		OneContext {
-			ctx.cancel(onecontext.canceled)
+			ctx.cancel(canceled)
 		}
 		else {
 			context.cancel(ctx)
@@ -125,7 +125,7 @@ pub fn (mut octx OneContext) run_two_contexts(ctx1 context.Context, ctx2 context
 		c2done := ctx2.done()
 		select {
 			_ := <-octx_cancel_done {
-				octx.cancel(onecontext.canceled)
+				octx.cancel(canceled)
 			}
 			_ := <-c1done {
 				octx.cancel(ctx1.err())
@@ -143,7 +143,7 @@ pub fn (mut octx OneContext) run_multiple_contexts(ctx context.Context) {
 		cdone := ctx.done()
 		select {
 			_ := <-octx_cancel_done {
-				octx.cancel(onecontext.canceled)
+				octx.cancel(canceled)
 			}
 			_ := <-cdone {
 				octx.cancel(ctx.err())
