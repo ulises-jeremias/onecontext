@@ -4,7 +4,7 @@
 [vlang.io](https://vlang.io) |
 [Docs](https://ulises-jeremias.github.io/onecontext) |
 [Changelog](#) |
-[Contributing](https://github.com/ulises-jeremias/onecontext/blob/master/CONTRIBUTING.md)
+[Contributing](https://github.com/ulises-jeremias/onecontext/blob/main/CONTRIBUTING.md)
 
 </div>
 <div align="center">
@@ -79,6 +79,6 @@ $ ./bin/test # execute `./bin/test -h` to know more about the test command
 [workflowbadge]: https://github.com/ulises-jeremias/onecontext/workflows/Build%20and%20Test%20with%20deps/badge.svg
 [validatedocsbadge]: https://github.com/ulises-jeremias/onecontext/workflows/Validate%20Docs/badge.svg
 [licensebadge]: https://img.shields.io/badge/License-MIT-blue.svg
-[workflowurl]: https://github.com/ulises-jeremias/onecontext/commits/master
-[validatedocsurl]: https://github.com/ulises-jeremias/onecontext/commits/master
-[licenseurl]: https://github.com/ulises-jeremias/onecontext/blob/master/LICENSE
+[workflowurl]: https://github.com/ulises-jeremias/onecontext/commits/main
+[validatedocsurl]: https://github.com/ulises-jeremias/onecontext/commits/main
+[licenseurl]: https://github.com/ulises-jeremias/onecontext/blob/main/LICENSE
