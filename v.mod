@@ -1,8 +1,8 @@
 Module {
         name: 'onecontext'
-        description: 'Reactive Extensions for the V language.'
+        description: 'A library to merge existing V contexts'
         version: '0.1.0'
         license: 'MIT'
-	    repo_url: 'https://github.com/ulises-jeremias/onecontext'
+        repo_url: 'https://github.com/ulises-jeremias/onecontext'
         dependencies: []
 }
