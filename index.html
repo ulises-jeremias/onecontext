@@ -50,7 +50,53 @@
 				<div class="doc-container">
 					<div class="doc-content">
 						<section id="readme_onecontext" class="doc-node">
-							<div class="title"><h1> onecontext <a href="#readme_onecontext">#</a></h1></div>
+							<div class="title"><h1> onecontext <a href="#readme_onecontext">#</a></h1></div><div align="center">
+<h1>One Context</h1>
+<p><a href="https://vlang.io">vlang.io</a> |
+<a href="https://ulises-jeremias.github.io/onecontext">Docs</a> |
+<a href="#">Changelog</a> |
+<a href="https://github.com/ulises-jeremias/onecontext/blob/master/CONTRIBUTING.md">Contributing</a></p>
+</div>
+<div align="center">
+<p>[<img src="https://github.com/ulises-jeremias/onecontext/workflows/Build%20and%20Test%20with%20deps/badge.svg" alt="Build Status">]<a href="https://github.com/ulises-jeremias/onecontext/commits/master">workflowurl</a>
+[<img src="https://github.com/ulises-jeremias/onecontext/workflows/Validate%20Docs/badge.svg" alt="Docs Validation">]<a href="https://github.com/ulises-jeremias/onecontext/commits/master">validatedocsurl</a>
+[<img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT">]<a href="https://github.com/ulises-jeremias/onecontext/blob/master/LICENSE">licenseurl</a></p>
+</div>
+<p>A library to merge existing V contexts</p>
+<h2>Overview</h2>
+<p>Have you ever faced the situation where you have to merge multiple existing contexts?
+If not, then you might, eventually.</p>
+<p>For example, we can face the situation where we are building an application using a library that gives us a global context.
+This context expires once the application is stopped.</p>
+<p>Meanwhile, we are exposing a service like this:</p>
+<pre><code class="language-v">fn (f Foo) get(ctx context.Context, bar Bar) ?Baz {
+    . . .
+}
+</code></pre>
+<p>Here, we receive another context provided by the service.</p>
+<p>Then, in the <code>get</code> implementation, we want for example to query a database and we must provide a context for that.</p>
+<p>Ideally, we would like to provide a merged context that would expire either:</p>
+<ul>
+<li>When the application is stopped</li>
+<li>Or when the received service context expires</li>
+</ul>
+<p>This is exactly the purpose of this library.</p>
+<p>In our case, we can now merge the two contexts in a single one like this:</p>
+<pre><code class="language-v">ctx := onecontext.merge(ctx1, ctx2)
+</code></pre>
+<p>This returns a merged context that we can now propagate.</p>
+<h3>Install onecontext</h3>
+<p><strong>Via vpm</strong></p>
+<pre><code class="language-sh">$ v install ulises-jeremias.onecontext
+</code></pre>
+<p><strong>Via <a href="https://github.com/v-pkg/vpkg">vpkg</a></strong></p>
+<pre><code class="language-sh">$ vpkg get https://github.com/ulises-jeremias/onecontext
+</code></pre>
+<p>Done. Installation completed.</p>
+<h2>Testing</h2>
+<p>To test the module, just type the following command:</p>
+<pre><code class="language-sh">$ ./bin/test # execute `./bin/test -h` to know more about the test command
+</code></pre>
 
 </section>
 
@@ -120,7 +166,7 @@
 </section>
 
 						<div class="footer">
-							Powered by vdoc. Generated on: 16 Apr 2021 23:56:33
+							Powered by vdoc. Generated on: 17 Apr 2021 00:05:26
 						</div>
 					</div>
 					
