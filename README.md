@@ -22,7 +22,8 @@ A library to merge existing V contexts
 Have you ever faced the situation where you have to merge multiple existing contexts?
 If not, then you might, eventually.
 
-For example, we can face the situation where we are building an application using a library that gives us a global context.
+For example, we can face the situation where we are building an application
+using a library that gives us a global context.
 This context expires once the application is stopped.
 
 Meanwhile, we are exposing a service like this:
@@ -35,7 +36,8 @@ fn (f Foo) get(ctx context.Context, bar Bar) ?Baz {
 
 Here, we receive another context provided by the service.
 
-Then, in the `get` implementation, we want for example to query a database and we must provide a context for that.
+Then, in the `get` implementation, we want for example to query a database and
+we must provide a context for that.
 
 Ideally, we would like to provide a merged context that would expire either:
 
