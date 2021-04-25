@@ -61,7 +61,8 @@
 <h2>Overview</h2>
 <p>Have you ever faced the situation where you have to merge multiple existing contexts?
 If not, then you might, eventually.</p>
-<p>For example, we can face the situation where we are building an application using a library that gives us a global context.
+<p>For example, we can face the situation where we are building an application
+using a library that gives us a global context.
 This context expires once the application is stopped.</p>
 <p>Meanwhile, we are exposing a service like this:</p>
 <pre><code class="language-v">fn (f Foo) get(ctx context.Context, bar Bar) ?Baz {
@@ -69,7 +70,8 @@ This context expires once the application is stopped.</p>
 }
 </code></pre>
 <p>Here, we receive another context provided by the service.</p>
-<p>Then, in the <code>get</code> implementation, we want for example to query a database and we must provide a context for that.</p>
+<p>Then, in the <code>get</code> implementation, we want for example to query a database
+and we must provide a context for that.</p>
 <p>Ideally, we would like to provide a merged context that would expire either:</p>
 <ul>
 <li>When the application is stopped</li>
@@ -161,7 +163,7 @@ This context expires once the application is stopped.</p>
 </section>
 
 						<div class="footer">
-							Powered by vdoc. Generated on: 17 Apr 2021 21:40:20
+							Powered by vdoc. Generated on: 25 Apr 2021 19:11:04
 						</div>
 					</div>
 					
