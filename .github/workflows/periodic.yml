@@ -19,6 +19,8 @@ jobs:
         run: |
           make
           sudo ./v symlink
+      - name: V doctor
+        run: v doctor
       - name: Move onecontext source code to V Modules
         run: mv ./onecontext ~/.vmodules
       - name: Execute Tests
