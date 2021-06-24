@@ -9,28 +9,28 @@ jobs:
   ubuntu:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Latest V
-      uses: actions/checkout@v2
-      with:
-        repository: vlang/v
-    - name: Checkout onecontext
-      uses: actions/checkout@v2
-      with:
-        path: onecontext
-    - name: Build V
-      run: |
-        make
-        sudo ./v symlink
-    - name: V doctor
-      run: v doctor
-    - name: Build docs
-      run: |
-        rm -f ./onecontext/README.md
-        mv ./onecontext/static/DOCS.md ./onecontext/README.md
-        v doc -m -f html onecontext/
-        mv ./onecontext/_docs/onecontext.html ./onecontext/_docs/index.html
-    - name: Deploy to gh-pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./onecontext/_docs/
+      - name: Checkout Latest V
+        uses: actions/checkout@v2
+        with:
+          repository: vlang/v
+      - name: Checkout onecontext
+        uses: actions/checkout@v2
+        with:
+          path: onecontext
+      - name: Build V
+        run: |
+          make
+          sudo ./v symlink
+      - name: V doctor
+        run: v doctor
+      - name: Build docs
+        run: |
+          rm -f ./onecontext/README.md
+          mv ./onecontext/static/DOCS.md ./onecontext/README.md
+          v doc -m -f html onecontext/
+          mv ./onecontext/_docs/onecontext.html ./onecontext/_docs/index.html
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./onecontext/_docs/
