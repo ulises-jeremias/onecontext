@@ -35,4 +35,4 @@ fi
 echo "Executing tests with command: \"v ${flags} test .\""
 v ${flags} test ${onecontext_dir_path}
 
-find . -name '*_test' -exec rm -f {} +
+find ${onecontext_dir_path} -name '*_test' -exec rm -f {} +
