@@ -80,7 +80,7 @@ and we must provide a context for that.</p>
 </ul>
 <p>This is exactly the purpose of this library.</p>
 <p>In our case, we can now merge the two contexts in a single one like this:</p>
-<pre><code class="language-v">ctx := onecontext.merge(ctx1, ctx2)
+<pre><code class="language-v">ctx, cancel := onecontext.merge(ctx1, ctx2)
 </code></pre>
 <p>This returns a merged context that we can now propagate.</p>
 <h3>Install onecontext</h3>
@@ -159,7 +159,7 @@ and we must provide a context for that.</p>
 </section>
 
 						<div class="footer">
-							Powered by vdoc. Generated on: 27 Sep 2021 03:14:36
+							Powered by vdoc. Generated on: 27 Sep 2021 23:22:19
 						</div>
 					</div>
 					
