@@ -4,9 +4,9 @@ import context
 import time
 
 fn eventually(ch chan int) bool {
-	timeout := context.with_timeout(context.background(), 30 * time.millisecond)
+	timeout, cancel := context.with_timeout(context.background(), 30 * time.millisecond)
 	defer {
-		context.cancel(timeout)
+		cancel()
 	}
 
 	tdone := timeout.done()
@@ -22,27 +22,50 @@ fn eventually(ch chan int) bool {
 	return false
 }
 
+struct Value {
+	val string
+}
+
 fn test_merge_nomilan() {
-	foo := 'foo'
-	ctx1 := context.with_cancel(context.with_value(context.background(), 'foo', &foo))
+	foo := &Value{
+		val: 'foo'
+	}
+	ctx1, cancel := context.with_cancel(context.with_value(context.background(), 'foo',
+		foo))
 	defer {
-		context.cancel(ctx1)
+		cancel()
 	}
 
-	bar := 'bar'
-	ctx2 := context.with_cancel(context.with_value(context.background(), 'bar', &bar))
+	bar := &Value{
+		val: 'bar'
+	}
+	ctx2, _ := context.with_cancel(context.with_value(context.background(), 'bar', bar))
 
-	ctx := merge(ctx1, ctx2)
+	ctx, cancel2 := merge(ctx1, ctx2)
 
 	if deadline := ctx.deadline() {
 		panic('this should never happen')
 	}
 
-	val1_ptr := ctx.value('foo') or { panic('wrong value access for key `foo`') }
-	assert foo == *(&string(val1_ptr))
+	val1 := ctx.value('foo') or { panic('wrong value access for key `foo`') }
+	match val1 {
+		Value {
+			assert foo == val1
+		}
+		else {
+			assert false
+		}
+	}
 
-	val2_ptr := ctx.value('bar') or { panic('wrong value access for key `bar`') }
-	assert bar == *(&string(val2_ptr))
+	val2 := ctx.value('bar') or { panic('wrong value access for key `bar`') }
+	match val2 {
+		Value {
+			assert bar == val2
+		}
+		else {
+			assert false
+		}
+	}
 
 	if _ := ctx.value('baz') {
 		panic('this should never happen')
@@ -51,18 +74,18 @@ fn test_merge_nomilan() {
 	assert !eventually(ctx.done())
 	assert ctx.err() is none
 
-	cancel(ctx)
+	cancel2()
 	assert eventually(ctx.done())
 	assert ctx.err() is Error
 }
 
 fn test_merge_deadline_context_1() {
-	ctx1 := context.with_timeout(context.background(), time.second)
+	ctx1, cancel := context.with_timeout(context.background(), time.second)
 	defer {
-		context.cancel(ctx1)
+		cancel()
 	}
 	ctx2 := context.background()
-	ctx := merge(ctx1, ctx2)
+	ctx, _ := merge(ctx1, ctx2)
 
 	if deadline := ctx.deadline() {
 		assert deadline.unix_time() != 0
@@ -73,11 +96,11 @@ fn test_merge_deadline_context_1() {
 
 fn test_merge_deadline_context_2() {
 	ctx1 := context.background()
-	ctx2 := context.with_timeout(context.background(), time.second)
+	ctx2, cancel := context.with_timeout(context.background(), time.second)
 	defer {
-		context.cancel(ctx2)
+		cancel()
 	}
-	ctx := merge(ctx1, ctx2)
+	ctx, _ := merge(ctx1, ctx2)
 
 	if deadline := ctx.deadline() {
 		assert deadline.unix_time() != 0
@@ -93,18 +116,18 @@ fn test_merge_deadline_context_n() {
 	for i in 0 .. 10 {
 		ctxs << context.background()
 	}
-	ctx_n := context.with_timeout(context.background(), time.second)
+	ctx_n, _ := context.with_timeout(context.background(), time.second)
 	ctxs << ctx_n
 
 	for i in 0 .. 10 {
 		ctxs << context.background()
 	}
 
-	ctx := merge(ctx1, ...ctxs)
+	ctx, cancel := merge(ctx1, ...ctxs)
 
 	assert !eventually(ctx.done())
 	assert ctx.err() is none
-	cancel(ctx)
+	cancel()
 	assert eventually(ctx.done())
 	assert ctx.err() is Error
 }
@@ -113,7 +136,7 @@ fn test_merge_deadline_none() {
 	ctx1 := context.background()
 	ctx2 := context.background()
 
-	ctx := merge(ctx1, ctx2)
+	ctx, _ := merge(ctx1, ctx2)
 
 	if _ := ctx.deadline() {
 		panic('this should never happen')
@@ -124,8 +147,8 @@ fn test_merge_cancel_two() {
 	ctx1 := context.background()
 	ctx2 := context.background()
 
-	ctx := merge(ctx1, ctx2)
-	cancel(ctx)
+	ctx, cancel := merge(ctx1, ctx2)
+	cancel()
 
 	assert eventually(ctx.done())
 	assert ctx.err() is Error
@@ -137,8 +160,8 @@ fn test_merge_cancel_multiple() {
 	ctx2 := context.background()
 	ctx3 := context.background()
 
-	ctx := merge(ctx1, ctx2, ctx3)
-	cancel(ctx)
+	ctx, cancel := merge(ctx1, ctx2, ctx3)
+	cancel()
 
 	assert eventually(ctx.done())
 	assert ctx.err() is Error

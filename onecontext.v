@@ -15,32 +15,23 @@ mut:
 	done       chan int
 	err        IError
 	err_mutex  sync.Mutex
+	cancel_fn  context.CancelFn
 	cancel_ctx context.Context
-}
-
-pub fn cancel(ctx context.Context) {
-	match mut ctx {
-		OneContext {
-			ctx.cancel(canceled)
-		}
-		else {
-			context.cancel(ctx)
-		}
-	}
 }
 
 // merge allows to merge multiple contexts
 // it returns the merged context
-pub fn merge(ctx context.Context, ctxs ...context.Context) context.Context {
-	cancel_ctx := context.with_cancel(context.background())
+pub fn merge(ctx context.Context, ctxs ...context.Context) (context.Context, context.CancelFn) {
+	cancel_ctx, cancel := context.with_cancel(context.background())
 	mut octx := &OneContext{
 		done: chan int{cap: 3}
 		ctx: ctx
 		ctxs: ctxs
+		cancel_fn: cancel
 		cancel_ctx: cancel_ctx
 	}
 	go octx.run()
-	return context.Context(octx)
+	return context.Context(octx), cancel
 }
 
 pub fn (octx OneContext) deadline() ?time.Time {
@@ -77,7 +68,7 @@ pub fn (mut octx OneContext) err() IError {
 	return octx.err
 }
 
-pub fn (octx OneContext) value(key string) ?voidptr {
+pub fn (octx OneContext) value(key context.Key) ?context.Any {
 	if value := octx.ctx.value(key) {
 		return value
 	}
@@ -108,7 +99,7 @@ pub fn (octx OneContext) str() string {
 }
 
 pub fn (mut octx OneContext) cancel(err IError) {
-	context.cancel(octx.cancel_ctx)
+	octx.cancel_fn()
 	octx.err_mutex.@lock()
 	octx.err = err
 	octx.err_mutex.unlock()
