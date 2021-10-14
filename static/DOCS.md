@@ -42,7 +42,7 @@ This is exactly the purpose of this library.
 In our case, we can now merge the two contexts in a single one like this:
 
 ```v ignore
-ctx := onecontext.merge(ctx1, ctx2)
+ctx, cancel := onecontext.merge(ctx1, ctx2)
 ```
 
 This returns a merged context that we can now propagate.
