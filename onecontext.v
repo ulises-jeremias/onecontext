@@ -13,7 +13,7 @@ mut:
 	ctx        context.Context
 	ctxs       []context.Context
 	done       chan int
-	err        IError
+	err        IError = none
 	err_mutex  sync.Mutex
 	cancel_fn  context.CancelFn
 	cancel_ctx context.Context
@@ -22,7 +22,8 @@ mut:
 // merge allows to merge multiple contexts
 // it returns the merged context
 pub fn merge(ctx context.Context, ctxs ...context.Context) (context.Context, context.CancelFn) {
-	cancel_ctx, cancel := context.with_cancel(context.background())
+	mut background := context.background()
+	cancel_ctx, cancel := context.with_cancel(mut &background)
 	mut octx := &OneContext{
 		done: chan int{cap: 3}
 		ctx: ctx
@@ -83,14 +84,16 @@ pub fn (octx OneContext) value(key context.Key) ?context.Any {
 }
 
 pub fn (mut octx OneContext) run() {
+	mut wrapped_ctx := &octx.ctx
 	if octx.ctxs.len == 1 {
-		octx.run_two_contexts(octx.ctx, octx.ctxs[0])
+		mut first_ctx := &octx.ctxs[0]
+		octx.run_two_contexts(mut wrapped_ctx, mut first_ctx)
 		return
 	}
 
-	octx.run_multiple_contexts(octx.ctx)
-	for ctx in octx.ctxs {
-		octx.run_multiple_contexts(ctx)
+	octx.run_multiple_contexts(mut wrapped_ctx)
+	for mut ctx in octx.ctxs {
+		octx.run_multiple_contexts(mut &ctx)
 	}
 }
 
@@ -109,8 +112,8 @@ pub fn (mut octx OneContext) cancel(err IError) {
 	}
 }
 
-pub fn (mut octx OneContext) run_two_contexts(ctx1 context.Context, ctx2 context.Context) {
-	go fn (mut octx OneContext, ctx1 context.Context, ctx2 context.Context) {
+pub fn (mut octx OneContext) run_two_contexts(mut ctx1 context.Context, mut ctx2 context.Context) {
+	go fn (mut octx OneContext, mut ctx1 context.Context, mut ctx2 context.Context) {
 		octx_cancel_done := octx.cancel_ctx.done()
 		c1done := ctx1.done()
 		c2done := ctx2.done()
@@ -125,11 +128,11 @@ pub fn (mut octx OneContext) run_two_contexts(ctx1 context.Context, ctx2 context
 				octx.cancel(ctx1.err())
 			}
 		}
-	}(mut octx, ctx1, ctx2)
+	}(mut &octx, mut &ctx1, mut &ctx2)
 }
 
-pub fn (mut octx OneContext) run_multiple_contexts(ctx context.Context) {
-	go fn (mut octx OneContext, ctx context.Context) {
+pub fn (mut octx OneContext) run_multiple_contexts(mut ctx context.Context) {
+	go fn (mut octx OneContext, mut ctx context.Context) {
 		octx_cancel_done := octx.cancel_ctx.done()
 		cdone := ctx.done()
 		select {
@@ -140,5 +143,5 @@ pub fn (mut octx OneContext) run_multiple_contexts(ctx context.Context) {
 				octx.cancel(ctx.err())
 			}
 		}
-	}(mut octx, ctx)
+	}(mut &octx, mut &ctx)
 }
