@@ -1,3 +1,9 @@
+# THIS REPOSITORY WAS MOVED TO THE STANDARD V LIB
+
+V Lib module [context.onecontext](https://github.com/vlang/v/tree/master/vlib/context/onecontext)
+
+* * *
+
 <div align="center">
 <h1>One Context</h1>
 
